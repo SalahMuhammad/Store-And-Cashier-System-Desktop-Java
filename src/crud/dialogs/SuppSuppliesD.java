@@ -1,6 +1,8 @@
 package crud.dialogs;
 
+import javaapplication2.SalesItemsTableD;
 import classes.SuppSuppliesO;
+import java.math.BigDecimal;
 import javaapplication2.MyMethods;
 import javax.swing.JOptionPane;
 import modules.ItemsC;
@@ -11,7 +13,7 @@ public class SuppSuppliesD extends javax.swing.JDialog {
     public int id = -1;
     int oldCount;
     String oldItemId;
-    public int suppInvId = -1;
+    public int suppInvId;
     ItemsC i = new ItemsC();
     
     public SuppSuppliesD(java.awt.Frame parent, boolean modal) {
@@ -19,6 +21,8 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         initComponents();
         
         MyMethods.addEscapeListener( this );
+        
+        MyMethods.jTFRequestFocus( countText, priceText );
         
 //        menu.add( listPanel );
         deleteBTN.setVisible( false );
@@ -35,6 +39,9 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         submitBTN = new javax.swing.JButton();
         deleteBTN = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        priceText = new javax.swing.JTextField();
+        updateItemsPriceCheckbox = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("الاعداد");
@@ -56,11 +63,6 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         });
 
         countText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        countText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                countTextActionPerformed(evt);
-            }
-        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("العدد: ");
@@ -80,29 +82,48 @@ public class SuppSuppliesD extends javax.swing.JDialog {
             }
         });
 
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("سعر الشراء: ");
+
+        priceText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        priceText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                priceTextActionPerformed(evt);
+            }
+        });
+
+        updateItemsPriceCheckbox.setText("تحديث الاسعار فى جدول الاصناف");
+        updateItemsPriceCheckbox.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(countText)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 1, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(submitBTN)
-                            .addComponent(descText, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(deleteBTN)))
-                .addContainerGap())
+                        .addComponent(updateItemsPriceCheckbox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(submitBTN)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(deleteBTN))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(countText)
+                                    .addComponent(priceText)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(0, 1, Short.MAX_VALUE)
+                                        .addComponent(descText, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(6, 6, 6))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -117,9 +138,15 @@ public class SuppSuppliesD extends javax.swing.JDialog {
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(priceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(18, 18, 18)
+                .addComponent(updateItemsPriceCheckbox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(submitBTN)
                     .addComponent(deleteBTN))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -130,7 +157,9 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -139,7 +168,7 @@ public class SuppSuppliesD extends javax.swing.JDialog {
 
     private void descTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descTextActionPerformed
         // TODO add your handling code here:
-        SalesItemsD it = new SalesItemsD( null, true );
+        SalesItemsTableD it = new SalesItemsTableD( null, true );
         it.getDescText().setText( descText.getText() );
         
         it.setVisible( true );
@@ -151,11 +180,6 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         } catch ( NullPointerException ex ) {}
     }//GEN-LAST:event_descTextActionPerformed
 
-    private void countTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countTextActionPerformed
-        // TODO add your handling code here:
-        submitAction();
-    }//GEN-LAST:event_countTextActionPerformed
-
     private void submitBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitBTNActionPerformed
         // TODO add your handling code here:
         submitAction();
@@ -163,7 +187,6 @@ public class SuppSuppliesD extends javax.swing.JDialog {
 
     void submitAction() {
         int result = -1;
-        int count  = 0;
         
         String itemId = i.getItemId( descText.getText() );
         
@@ -173,39 +196,71 @@ public class SuppSuppliesD extends javax.swing.JDialog {
             return;
         }
         
-        if ( !countText.getText().matches("\\d+") ) {
+        if ( !countText.getText().matches("[0-9]+") ) {
             JOptionPane.showMessageDialog( this, "يرجي ادخال قيمة صحيحة فى حقل العدد...", "خطاء", 2 );
             return;
-        }        
+        }       
         
-        count = Integer.parseInt( countText.getText() );
+        if ( !priceText.getText().matches("([0-9]*[.])?[0-9]+") ) {
+            JOptionPane.showMessageDialog( this, "يرجي ادخال قيمة صحيحة فى حقل السعر...", "خطاء", 2 );
+            return;
+        }       
         
         if ( submitBTN.getText() == "اضافة" ) {
             result = new SuppSuppliesC().insert( 
-                itemId, 
-                count, 
-                suppInvId
-            );
-        } else if ( submitBTN.getText() == "تحديث" ){
-            int warehouseStock = i.getWarehouseStock( oldItemId );
-            
-            if ( count < Math.abs(warehouseStock - oldCount) || ( ! oldItemId.equals(itemId) && warehouseStock - oldCount < 0 ) ) {
-                JOptionPane.showMessageDialog( this, "لا يوجد ما يكفي من القطع.", "خطاء", 2 );
-                return;
-            }
-
-            result = new SuppSuppliesC().update(
-                id,
                 itemId,
-                count
+                priceText.getText(),
+                countText.getText(), 
+                Integer.toString( suppInvId )
             );
-
-            this.dispose();
+        } else if ( submitBTN.getText() == "تحديث" ) {
+            result = new SuppSuppliesC().update(
+                itemId,
+                countText.getText(),
+                priceText.getText(),
+                Integer.toString( id )
+            );
         }
 
-        if ( result == -1 ) return;
+        if ( result == 1 ) {
+            if ( updateItemsPriceCheckbox.isSelected() ) {
+                float price = Float.parseFloat( priceText.getText() );
+                String wswsPrice;
+                String wsPrice;
+                String p;
 
-        emptyFields();
+                if ( price < 10 ) {
+                    wswsPrice   = price + price * .4 + "";
+                    wsPrice     = price + price * .5 + "";
+                    p           = price + price * .9 + "";
+                } else if ( price < 20 ) {
+                    wswsPrice   = price + price * .3 + "";
+                    wsPrice     = price + price * .4 + "";
+                    p           = price + price * .7 + "";
+                } else if ( price < 60 ) {
+                    wswsPrice   = price + price * .25 + "";
+                    wsPrice     = price + price * .3 + "";
+                    p           = price + price * .5 + "";
+                } else {
+                    wswsPrice   = price + price * .15 + "";
+                    wsPrice     = price + price * .2 + "";
+                    p           = price + price * .4 + "";
+                }
+            
+                new ItemsC().updatePrices(
+                    priceText.getText(), 
+                    p,
+                    wsPrice,
+                    wswsPrice,
+                    itemId
+                );
+            }
+            
+            if ( submitBTN.getText().equals( "اضافة" ) )
+                emptyFields();
+            else if ( submitBTN.getText().equals( "تحديث" ) )
+                this.dispose();
+        }
     }
     
     public void initialze( int id ) {
@@ -213,11 +268,14 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         
         SuppSuppliesO obj = new SuppSuppliesC().getSingleItem( id );
         
+        descText.setEnabled( false );
+        
         oldCount = obj.count;
         oldItemId = obj.itemId;
         descText.setText( obj.desc );
         countText.setText( Integer.toString( obj.count ) );
-        suppInvId = obj.invoiceId;
+        priceText.setText( obj.price + "" );
+        
         
         submitBTN.setText( "تحديث");
         deleteBTN.setVisible( true ); 
@@ -257,6 +315,11 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_deleteBTNActionPerformed
 
+    private void priceTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceTextActionPerformed
+        // TODO add your handling code here:
+        submitBTNActionPerformed( null );
+    }//GEN-LAST:event_priceTextActionPerformed
+
 //    private void autoCompleat( String text) {
 //        ArrayList<ItemsO> arr = new ItemsC().getAllForSearchText( descText.getText() );
 //        
@@ -285,6 +348,7 @@ public class SuppSuppliesD extends javax.swing.JDialog {
         
         descText.setText( "" );
         countText.setText( "" );
+        priceText.setText( "" );
     }
     
     public static void main(String args[]) {
@@ -332,7 +396,10 @@ public class SuppSuppliesD extends javax.swing.JDialog {
     private javax.swing.JTextField descText;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField priceText;
     private javax.swing.JButton submitBTN;
+    private javax.swing.JCheckBox updateItemsPriceCheckbox;
     // End of variables declaration//GEN-END:variables
 }

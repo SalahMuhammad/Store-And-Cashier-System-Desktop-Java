@@ -16,14 +16,49 @@ public class SuppliersInvC extends MySQLAdapter {
         
         classes.SuppliersInvO info = null;
         try {
-            this.rs = this.select( table + join , where, "si.id, si.date, si.inv_price, si.note, sf.name", "si.id", "si.date desc", null, null )
-                    .executeQuery();
+            this.ps = this.select( table + join , "sf.name like ? OR si.date > NOW() - INTERVAL ? HOUR", "si.id, si.date, si.note, sf.name, SUM( ss.count * ss.price ) AS invoice_price", "si.id", "si.date desc", null, null );
+            ps.setString( 1, "%" + where + "%" );
+            ps.setString( 2, "");
+            
+            rs = ps.executeQuery();
 
             while ( this.rs.next() ) {
                 info = new classes.SuppliersInvO( 
                     this.rs.getInt( "id" ),
-                    this.rs.getInt( "inv_price" ),
-                    this.rs.getDate( "date" ) ,
+                    this.rs.getBigDecimal( "invoice_price" ),
+                    this.rs.getTimestamp( "date" ) ,
+                    this.rs.getString( "note" ),
+                    this.rs.getString( "name" )
+                );
+
+                list.add( info );
+            }
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog( null, "getAll(); " + ex);
+        } finally {
+            this.closeConnection();
+        }
+        
+        return list;
+    }
+    
+    public ArrayList<classes.SuppliersInvO> getAll2( String where ) {
+        ArrayList<classes.SuppliersInvO> list = new ArrayList<>();
+        
+        classes.SuppliersInvO info = null;
+        try {
+            this.ps = this.select( table + join , "ss.itemId = ?", "si.id, si.date, si.note, sf.name, SUM( ss.count * ss.price ) AS invoice_price", "si.id", "si.date desc", null, null );
+//            ps.setString( 1, "%" + where + "%" );
+            ps.setString( 1, where );
+            
+            rs = ps.executeQuery();
+
+            while ( this.rs.next() ) {
+                info = new classes.SuppliersInvO( 
+                    this.rs.getInt( "id" ),
+                    this.rs.getBigDecimal( "invoice_price" ),
+                    this.rs.getTimestamp( "date" ) ,
                     this.rs.getString( "note" ),
                     this.rs.getString( "name" )
                 );
@@ -57,8 +92,8 @@ public class SuppliersInvC extends MySQLAdapter {
         return null;
     }
 
-    public int insert( InputStream invoice, int supplierID, int invPrice, String note ) {
-        String query = "INSERT INTO " + table + " ( inv, inv_price, supp_id, note ) VALUES ( ?, ?, ?, ? )";
+    public int insert( InputStream invoice, int supplierID, String note ) {
+        String query = "INSERT INTO " + table + " ( inv, supp_id, note ) VALUES ( ?, ?, ? )";
 
         try {
             
@@ -66,9 +101,8 @@ public class SuppliersInvC extends MySQLAdapter {
             this.ps = this.con.prepareStatement( query );
 
             this.ps.setBlob( 1, invoice );
-            this.ps.setInt( 2, invPrice );
-            this.ps.setInt( 3, supplierID );
-            this.ps.setString( 4, note );
+            this.ps.setInt( 2, supplierID );
+            this.ps.setString( 3, note );
 
             this.ps.execute();
 
@@ -84,8 +118,8 @@ public class SuppliersInvC extends MySQLAdapter {
         return -1;
     }
     
-    public int update( int id, InputStream invoice, int invPrice, int supplierID, String note ) {
-        String query = "UPDATE " + table + " SET inv=?, inv_price=?, supp_id=?, note=? where id=?";
+    public int update( int id, InputStream invoice, int supplierID, String note ) {
+        String query = "UPDATE " + table + " SET inv=?, supp_id=?, note=? where id=?";
         
         try {
             this.connect();
@@ -93,10 +127,9 @@ public class SuppliersInvC extends MySQLAdapter {
             this.ps = this.con.prepareStatement( query );
             
             this.ps.setBlob( 1, invoice );
-            this.ps.setInt( 2, invPrice );
-            this.ps.setInt( 3, supplierID );
-            this.ps.setString( 4, note );
-            this.ps.setInt( 5, id );
+            this.ps.setInt( 2, supplierID );
+            this.ps.setString( 3, note );
+            this.ps.setInt( 4, id );
             
             this.ps.execute();
             

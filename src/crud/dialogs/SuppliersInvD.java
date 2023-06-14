@@ -28,6 +28,8 @@ public class SuppliersInvD extends javax.swing.JDialog {
         
         MyMethods.addEscapeListener( this );
         
+        MyMethods.jTFRequestFocus( suppNameText, noteText );
+        
         deleteBTN.setVisible( false );
     }
 
@@ -39,8 +41,6 @@ public class SuppliersInvD extends javax.swing.JDialog {
         browseBTN = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         suppNameText = new javax.swing.JTextField();
-        invPriceText = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         submitBTN = new javax.swing.JButton();
         deleteBTN = new javax.swing.JButton();
         imgLabel = new javax.swing.JLabel();
@@ -60,22 +60,9 @@ public class SuppliersInvD extends javax.swing.JDialog {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("اسم المورد: ");
 
+        suppNameText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        suppNameText.setForeground(java.awt.Color.blue);
         suppNameText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        suppNameText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                suppNameTextActionPerformed(evt);
-            }
-        });
-
-        invPriceText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        invPriceText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                invPriceTextActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("اجمالي سعر الفتورة: ");
 
         submitBTN.setText("اضافة");
         submitBTN.addActionListener(new java.awt.event.ActionListener() {
@@ -92,6 +79,8 @@ public class SuppliersInvD extends javax.swing.JDialog {
             }
         });
 
+        noteText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        noteText.setForeground(java.awt.Color.blue);
         noteText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         noteText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,32 +106,25 @@ public class SuppliersInvD extends javax.swing.JDialog {
                             .addComponent(browseBTN, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(suppNameText, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
-                                    .addComponent(invPriceText))))
+                                .addComponent(suppNameText, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(deleteBTN, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(suppNameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(invPriceText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(noteText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(browseBTN)
                 .addGap(18, 18, 18)
@@ -150,7 +132,7 @@ public class SuppliersInvD extends javax.swing.JDialog {
                     .addComponent(submitBTN)
                     .addComponent(deleteBTN))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(imgLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addComponent(imgLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -184,16 +166,6 @@ public class SuppliersInvD extends javax.swing.JDialog {
             dispose();
         }
     }//GEN-LAST:event_deleteBTNActionPerformed
-
-    private void invPriceTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invPriceTextActionPerformed
-        // TODO add your handling code here:
-        noteText.requestFocus();
-    }//GEN-LAST:event_invPriceTextActionPerformed
-
-    private void suppNameTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppNameTextActionPerformed
-        // TODO add your handling code here:
-        invPriceText.requestFocus();
-    }//GEN-LAST:event_suppNameTextActionPerformed
 
     private void browseBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseBTNActionPerformed
         // TODO add your handling code here:
@@ -232,12 +204,7 @@ public class SuppliersInvD extends javax.swing.JDialog {
     
     void submitAction() {
         int result = 0;
-        
-        if( ! invPriceText.getText().matches( "\\d+") ) {
-           JOptionPane.showMessageDialog( this, "سعر الفاتورة غير صحيح...", "اخطار", 2);
-           return;
-        }
-        
+
         int suppID = new SuppliersInfoC().getSupplierID( suppNameText.getText() );
             
         if ( suppID == -1 ) {
@@ -246,9 +213,9 @@ public class SuppliersInvD extends javax.swing.JDialog {
         }
         
         if ( submitBTN.getText() == "اضافة" ) {            
-            result = new SuppliersInvC().insert( inputStream, suppID, Integer.parseInt( invPriceText.getText() ), noteText.getText() );
+            result = new SuppliersInvC().insert( inputStream, suppID, noteText.getText() );
         } else if ( submitBTN.getText() == "تحديث" ){
-            new SuppliersInvC().update( id , inputStream, Integer.parseInt( invPriceText.getText() ), suppID, noteText.getText() );
+            new SuppliersInvC().update( id , inputStream, suppID, noteText.getText() );
             this.dispose();
         }
         
@@ -257,14 +224,12 @@ public class SuppliersInvD extends javax.swing.JDialog {
         emptyFields();
     }
     
-    public void initialze( int id, byte[] bytes, String supplierName, String invPrice, String note) {
+    public void initialze( int id, byte[] bytes, String supplierName, String note) {
         this.id = id;
         setTitle( "فاتورة " + supplierName );
         
-        invPriceText.requestFocus();
-        
+        suppNameText.requestFocus();
         suppNameText.setText( supplierName );
-        invPriceText.setText( invPrice );
         noteText.setText( note );
         submitBTN.setText( "تحديث");
         
@@ -283,10 +248,9 @@ public class SuppliersInvD extends javax.swing.JDialog {
     }
     
     private void emptyFields() {
-        invPriceText.requestFocus();
+        suppNameText.requestFocus();
         
 //        suppNameText.setText( "" );
-        invPriceText.setText( "" );
         noteText.setText( "" );
         imgLabel.setIcon( null );
         
@@ -347,9 +311,7 @@ public class SuppliersInvD extends javax.swing.JDialog {
     private javax.swing.JButton browseBTN;
     private javax.swing.JButton deleteBTN;
     private javax.swing.JLabel imgLabel;
-    private javax.swing.JTextField invPriceText;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField noteText;

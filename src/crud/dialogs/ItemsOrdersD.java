@@ -1,5 +1,6 @@
 package crud.dialogs;
 
+import javaapplication2.SalesItemsTableD;
 import javaapplication2.MyMethods;
 import javax.swing.JOptionPane;
 import modules.ItemsC;
@@ -8,8 +9,9 @@ import modules.ItemsOrdersC;
 public class ItemsOrdersD extends javax.swing.JDialog {
 
     int id;
-    String oldItemId;
-    int oldCount;
+//    String oldItemId;
+//    int oldCount;
+    public String invId;
     
     public ItemsOrdersD(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -36,6 +38,9 @@ public class ItemsOrdersD extends javax.swing.JDialog {
         setTitle("طلب اصناف من المخزن");
         setResizable(false);
 
+        descText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        descText.setForeground(java.awt.Color.blue);
+        descText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         descText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 descTextActionPerformed(evt);
@@ -48,6 +53,9 @@ public class ItemsOrdersD extends javax.swing.JDialog {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("صرف: ");
 
+        countText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        countText.setForeground(java.awt.Color.blue);
+        countText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         countText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 countTextActionPerformed(evt);
@@ -76,9 +84,8 @@ public class ItemsOrdersD extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(descText, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(descText)
                             .addComponent(countText))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -86,7 +93,7 @@ public class ItemsOrdersD extends javax.swing.JDialog {
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(submitText)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 344, Short.MAX_VALUE)
                         .addComponent(jButton2)))
                 .addContainerGap())
         );
@@ -125,7 +132,7 @@ public class ItemsOrdersD extends javax.swing.JDialog {
 
     private void descTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descTextActionPerformed
         // TODO add your handling code here:
-        SalesItemsD it = new SalesItemsD( null, true );
+        SalesItemsTableD it = new SalesItemsTableD( null, true );
         it.getDescText().setText( descText.getText() );
         
         it.setVisible( true );
@@ -155,7 +162,7 @@ public class ItemsOrdersD extends javax.swing.JDialog {
         ItemsC itemsC = new ItemsC();
         int warehouseStock;
         
-        int result = 0;
+        int result = 1;
         if ( submitText.getText() == "اضافة" ) {
             warehouseStock = itemsC.getWarehouseStock( itemId );
             
@@ -164,20 +171,19 @@ public class ItemsOrdersD extends javax.swing.JDialog {
                 return;
             }
             
-            result = new ItemsOrdersC().insert( itemId, count );
+            new ItemsOrdersC().insert( itemId, countText.getText(), invId );
         }
         else {
-            int centerStock = itemsC.getCenterStock( oldItemId );
-            warehouseStock = itemsC.getWarehouseStock( oldItemId );
+            result = new ItemsOrdersC().update( id, itemId, count );
             
-            if ( count > ( warehouseStock + oldCount ) 
-                    || 0 > centerStock - oldCount + count 
-                    || ( ! oldItemId.equals( itemId ) && ( 0 > centerStock - oldCount || warehouseStock < oldCount ) ) ) {
-                JOptionPane.showMessageDialog( this, "لا يوجد ما يكفى من القطع.\n" + "قطع المخزن: " + warehouseStock + "\nقطع المحل: " + centerStock, "خطاء", 2 );
+            if ( result == 0 )  {
+                JOptionPane.showMessageDialog( this, "لا يوجد ما يكفي من القطع...", "خطاء", 2 );
                 return;
             }
-
-            result = new ItemsOrdersC().update( id, itemId, count );
+            else if ( result < 0 ) {
+                JOptionPane.showMessageDialog( this, "returnd values is less tahn 0 update()...", "error", 0 );
+                return;
+            }
             
             this.dispose();
         }
@@ -190,17 +196,18 @@ public class ItemsOrdersD extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        int centerStock = new ItemsC().getCenterStock(oldItemId );
-        
-        if ( centerStock - oldCount < 0 ) {
-            JOptionPane.showMessageDialog( this, "لا يوجد ما يكفى من القطع.\nقطع المحل: " + centerStock, "خطاء", 2 );
-            return;
-        }
-        
         int response = JOptionPane.showConfirmDialog( this, "هل انت متاكد من حذف هذة المعاملة...", "تاكيد", 0 );
         
         if ( response == JOptionPane.YES_OPTION ) {
-            new ItemsOrdersC().delete( id );
+            int result = new ItemsOrdersC().delete( id );
+            
+            if ( result == 0 ) {
+                JOptionPane.showMessageDialog( this, "لا يوجد ما يكفي من القطع...", "خطاء", 2 );
+                return;
+            } else if ( result < 0 ) {
+                JOptionPane.showMessageDialog( this, "returnd values is less tahn 0 update()...", "error", 0 );
+                return;
+            }
             
             this.dispose();
         }
@@ -209,8 +216,8 @@ public class ItemsOrdersD extends javax.swing.JDialog {
     public void init( int id, String desc, String qty ) {
         descText.requestFocus();
         
-        oldItemId = new ItemsC().getItemId( desc );
-        oldCount = Integer.parseInt( qty );
+//        oldItemId = new ItemsC().getItemId( desc );
+//        oldCount = Integer.parseInt( qty );
         
         this.id = id;
         descText.setText( desc );

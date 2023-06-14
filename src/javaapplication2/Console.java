@@ -1,26 +1,52 @@
 package javaapplication2;
 
-import java.awt.CardLayout;
 import Methods.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import modules.MySQLAdapter;
 
 //import raven.glasspanepopup.glassPanePopup;
 
 public class Console extends javax.swing.JFrame {
 
-    CardLayout cardLayout;
     public Console() {
         initComponents();
         
+        itemsBTN.setBackground( Color.BLUE );
+        itemsBTN.setForeground( Color.WHITE );
+        
+        setExtendedState( JFrame.MAXIMIZED_BOTH );
+
         itemsTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         countTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         suppInvTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         suppInfoTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
         orderItemsTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        orderItemsInvoicesTable.setSelectionMode( ListSelectionModel.SINGLE_SELECTION );
+        
         itemsFiterText.requestFocus();
-        cardLayout = ( CardLayout ) cardPanel.getLayout();
+        
+        // tables text alignment
+        MyMethods.jTableTextAlignment( itemsTable, JLabel.CENTER );
+        MyMethods.jTableTextAlignment( suppInfoTable, JLabel.CENTER );
+        MyMethods.jTableTextAlignment( suppInvTable, JLabel.CENTER );
+        MyMethods.jTableTextAlignment( countTable, JLabel.CENTER );
+        MyMethods.jTableTextAlignment( orderItemsTable, JLabel.CENTER );
+        MyMethods.jTableTextAlignment( orderItemsInvoicesTable, JLabel.CENTER );
+        
+        MyMethods.jTableHeaderRendererTextToCenter( itemsTable );
+        MyMethods.jTableHeaderRendererTextToCenter( suppInvTable );
+        MyMethods.jTableHeaderRendererTextToCenter( suppInfoTable );
+        MyMethods.jTableHeaderRendererTextToCenter( countTable );
+        MyMethods.jTableHeaderRendererTextToCenter( orderItemsTable );
+        MyMethods.jTableHeaderRendererTextToCenter( orderItemsInvoicesTable );
         
 //        new ItemsMethods().display( null, itemsTable, null );
     }
@@ -29,13 +55,15 @@ public class Console extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        imgLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         itemsBTN = new javax.swing.JButton();
         suppInfoBTN = new javax.swing.JButton();
         suppInvBTN = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        warehouseBTN = new javax.swing.JButton();
+        itemsOrdersBTN = new javax.swing.JButton();
+        reportsBTN = new javax.swing.JButton();
         cardPanel = new javax.swing.JPanel();
         itemsPanel = new javax.swing.JPanel();
         itemsFiterText = new javax.swing.JTextField();
@@ -51,15 +79,19 @@ public class Console extends javax.swing.JFrame {
         suppInvFilterText = new javax.swing.JTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         suppInvTable = new javax.swing.JTable();
-        imgLabel = new javax.swing.JLabel();
         itemsOrdersPanel = new javax.swing.JPanel();
         ordersItemsFilterText = new javax.swing.JTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
         orderItemsTable = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        orderItemsInvoicesTable = new javax.swing.JTable();
+        reportsPanel = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("وحدة التحكم");
 
+        itemsBTN.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         itemsBTN.setText("الاصناف");
         itemsBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -67,6 +99,7 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
+        suppInfoBTN.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         suppInfoBTN.setText("الموردين");
         suppInfoBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -74,24 +107,35 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        suppInvBTN.setText("الفواتير");
+        suppInvBTN.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        suppInvBTN.setText("فواتير الموردين");
         suppInvBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 suppInvBTNActionPerformed(evt);
             }
         });
 
-        jButton1.setText("عودة للخلف");
+        jButton1.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jButton1.setText("مبيعات");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        warehouseBTN.setText("طلب اصناف");
-        warehouseBTN.addActionListener(new java.awt.event.ActionListener() {
+        itemsOrdersBTN.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        itemsOrdersBTN.setText("طلب من المخزن");
+        itemsOrdersBTN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                warehouseBTNActionPerformed(evt);
+                itemsOrdersBTNActionPerformed(evt);
+            }
+        });
+
+        reportsBTN.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        reportsBTN.setText("التقارير");
+        reportsBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportsBTNActionPerformed(evt);
             }
         });
 
@@ -101,12 +145,14 @@ public class Console extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1)
-                    .addComponent(warehouseBTN, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
-                    .addComponent(suppInvBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(suppInfoBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(itemsBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jButton1)
+                        .addComponent(itemsOrdersBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(suppInvBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(suppInfoBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(itemsBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(reportsBTN))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -119,14 +165,18 @@ public class Console extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(suppInvBTN)
                 .addGap(18, 18, 18)
-                .addComponent(warehouseBTN)
+                .addComponent(itemsOrdersBTN)
                 .addGap(42, 42, 42)
                 .addComponent(jButton1)
+                .addGap(62, 62, 62)
+                .addComponent(reportsBTN)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         cardPanel.setLayout(new java.awt.CardLayout());
 
+        itemsFiterText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        itemsFiterText.setForeground(java.awt.Color.blue);
         itemsFiterText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         itemsFiterText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -140,14 +190,14 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        itemsTable.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        itemsTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         itemsTable.setForeground(java.awt.Color.blue);
         itemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "البار كود", "الوصف", "الشراء", "جملة الجملة", "الجملة", "قطاعي", "قطع المخزن", "قطع المحل"
+                "قطع المحل", "قطع المخزن", "قطاعي", "جملة", "جملة الجملة", "الشراء", "الوصف", "الباركود"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -158,7 +208,7 @@ public class Console extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        itemsTable.setRowHeight(30);
+        itemsTable.setRowHeight(35);
         itemsTable.getTableHeader().setReorderingAllowed(false);
         itemsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -167,7 +217,7 @@ public class Console extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(itemsTable);
         if (itemsTable.getColumnModel().getColumnCount() > 0) {
-            itemsTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+            itemsTable.getColumnModel().getColumn(6).setPreferredWidth(400);
         }
 
         javax.swing.GroupLayout itemsPanelLayout = new javax.swing.GroupLayout(itemsPanel);
@@ -178,21 +228,23 @@ public class Console extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(itemsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(itemsFiterText)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE))
                 .addContainerGap())
         );
         itemsPanelLayout.setVerticalGroup(
             itemsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(itemsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(itemsFiterText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                .addComponent(itemsFiterText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         cardPanel.add(itemsPanel, "card2");
 
+        suppInfoFiterText1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        suppInfoFiterText1.setForeground(java.awt.Color.blue);
         suppInfoFiterText1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         suppInfoFiterText1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -206,25 +258,25 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        suppInfoTable.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        suppInfoTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         suppInfoTable.setForeground(java.awt.Color.blue);
         suppInfoTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "المعرف", "الاسم", "رقم الهاتف"
+                "دين", "رقم الهاتف", "الاسم", "المعرف"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        suppInfoTable.setRowHeight(30);
+        suppInfoTable.setRowHeight(35);
         suppInfoTable.getTableHeader().setReorderingAllowed(false);
         suppInfoTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -232,6 +284,9 @@ public class Console extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(suppInfoTable);
+        if (suppInfoTable.getColumnModel().getColumnCount() > 0) {
+            suppInfoTable.getColumnModel().getColumn(3).setPreferredWidth(10);
+        }
 
         javax.swing.GroupLayout suppInfoPanelLayout = new javax.swing.GroupLayout(suppInfoPanel);
         suppInfoPanel.setLayout(suppInfoPanelLayout);
@@ -239,24 +294,24 @@ public class Console extends javax.swing.JFrame {
             suppInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(suppInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(suppInfoFiterText1, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                .addComponent(suppInfoFiterText1, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(suppInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(suppInfoPanelLayout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         suppInfoPanelLayout.setVerticalGroup(
             suppInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(suppInfoPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(suppInfoFiterText1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(452, Short.MAX_VALUE))
+                .addComponent(suppInfoFiterText1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(457, Short.MAX_VALUE))
             .addGroup(suppInfoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, suppInfoPanelLayout.createSequentialGroup()
-                    .addContainerGap(47, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(50, 50, 50)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 445, Short.MAX_VALUE)
                     .addContainerGap()))
         );
 
@@ -268,25 +323,25 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        countTable.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        countTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         countTable.setForeground(java.awt.Color.blue);
         countTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "المعرف", "الوصف", "عدد القطع"
+                "الاجمالي", "سعر القطعة", "العدد", "الوصف", "المعرف"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false
+                false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        countTable.setRowHeight(30);
+        countTable.setRowHeight(35);
         countTable.getTableHeader().setReorderingAllowed(false);
         countTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -295,9 +350,15 @@ public class Console extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(countTable);
         if (countTable.getColumnModel().getColumnCount() > 0) {
-            countTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+            countTable.getColumnModel().getColumn(1).setHeaderValue("سعر القطعة");
+            countTable.getColumnModel().getColumn(2).setHeaderValue("العدد");
+            countTable.getColumnModel().getColumn(3).setPreferredWidth(400);
+            countTable.getColumnModel().getColumn(3).setHeaderValue("الوصف");
         }
 
+        suppInvFilterText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        suppInvFilterText.setForeground(java.awt.Color.blue);
+        suppInvFilterText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         suppInvFilterText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 suppInvFilterTextKeyReleased(evt);
@@ -310,14 +371,14 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        suppInvTable.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        suppInvTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         suppInvTable.setForeground(java.awt.Color.blue);
         suppInvTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "المعرف", "التاريخ", "سعر الفاتورة", "ملاحظات", "اسم المورد"
+                "ملاحظات", "التاريخ", "اجمالي الفاتورة", "اسم المورد", "المعرف"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -328,7 +389,7 @@ public class Console extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        suppInvTable.setRowHeight(30);
+        suppInvTable.setRowHeight(35);
         suppInvTable.getTableHeader().setReorderingAllowed(false);
         suppInvTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -337,8 +398,9 @@ public class Console extends javax.swing.JFrame {
         });
         jScrollPane4.setViewportView(suppInvTable);
         if (suppInvTable.getColumnModel().getColumnCount() > 0) {
+            suppInvTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+            suppInvTable.getColumnModel().getColumn(1).setPreferredWidth(100);
             suppInvTable.getColumnModel().getColumn(3).setPreferredWidth(200);
-            suppInvTable.getColumnModel().getColumn(4).setPreferredWidth(200);
         }
 
         javax.swing.GroupLayout suppInvPanelLayout = new javax.swing.GroupLayout(suppInvPanel);
@@ -349,33 +411,27 @@ public class Console extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(suppInvPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(suppInvFilterText)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
-                    .addGroup(suppInvPanelLayout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(imgLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         suppInvPanelLayout.setVerticalGroup(
             suppInvPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(suppInvPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(suppInvFilterText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(suppInvPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(suppInvPanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 52, Short.MAX_VALUE)
-                        .addComponent(imgLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(90, 90, 90))
-                    .addGroup(suppInvPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addComponent(suppInvFilterText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         cardPanel.add(suppInvPanel, "card4");
 
+        ordersItemsFilterText.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ordersItemsFilterText.setForeground(java.awt.Color.blue);
+        ordersItemsFilterText.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         ordersItemsFilterText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 ordersItemsFilterTextKeyReleased(evt);
@@ -388,25 +444,25 @@ public class Console extends javax.swing.JFrame {
             }
         });
 
-        orderItemsTable.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        orderItemsTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         orderItemsTable.setForeground(java.awt.Color.blue);
         orderItemsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "المعرف", "الوصف", "صرف", "التاريخ"
+                "العدد", "الوصف", "المعرف"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        orderItemsTable.setRowHeight(30);
+        orderItemsTable.setRowHeight(35);
         orderItemsTable.getTableHeader().setReorderingAllowed(false);
         orderItemsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -416,7 +472,43 @@ public class Console extends javax.swing.JFrame {
         jScrollPane5.setViewportView(orderItemsTable);
         if (orderItemsTable.getColumnModel().getColumnCount() > 0) {
             orderItemsTable.getColumnModel().getColumn(1).setPreferredWidth(300);
-            orderItemsTable.getColumnModel().getColumn(3).setPreferredWidth(200);
+        }
+
+        jScrollPane6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jScrollPane6MouseClicked(evt);
+            }
+        });
+
+        orderItemsInvoicesTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        orderItemsInvoicesTable.setForeground(java.awt.Color.blue);
+        orderItemsInvoicesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "التاريخ", "المعرف"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        orderItemsInvoicesTable.setRowHeight(35);
+        orderItemsInvoicesTable.getTableHeader().setReorderingAllowed(false);
+        orderItemsInvoicesTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                orderItemsInvoicesTableMousePressed(evt);
+            }
+        });
+        jScrollPane6.setViewportView(orderItemsInvoicesTable);
+        if (orderItemsInvoicesTable.getColumnModel().getColumnCount() > 0) {
+            orderItemsInvoicesTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+            orderItemsInvoicesTable.getColumnModel().getColumn(0).setHeaderValue("التاريخ");
         }
 
         javax.swing.GroupLayout itemsOrdersPanelLayout = new javax.swing.GroupLayout(itemsOrdersPanel);
@@ -426,21 +518,50 @@ public class Console extends javax.swing.JFrame {
             .addGroup(itemsOrdersPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(itemsOrdersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ordersItemsFilterText, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE))
+                    .addComponent(ordersItemsFilterText, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 602, Short.MAX_VALUE))
                 .addContainerGap())
         );
         itemsOrdersPanelLayout.setVerticalGroup(
             itemsOrdersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(itemsOrdersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(ordersItemsFilterText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(7, Short.MAX_VALUE))
+                .addComponent(ordersItemsFilterText, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         cardPanel.add(itemsOrdersPanel, "card5");
+
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout reportsPanelLayout = new javax.swing.GroupLayout(reportsPanel);
+        reportsPanel.setLayout(reportsPanelLayout);
+        reportsPanelLayout.setHorizontalGroup(
+            reportsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(reportsPanelLayout.createSequentialGroup()
+                .addGap(86, 86, 86)
+                .addComponent(jButton3)
+                .addContainerGap(453, Short.MAX_VALUE))
+        );
+        reportsPanelLayout.setVerticalGroup(
+            reportsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(reportsPanelLayout.createSequentialGroup()
+                .addGap(58, 58, 58)
+                .addComponent(jButton3)
+                .addContainerGap(421, Short.MAX_VALUE))
+        );
+
+        cardPanel.add(reportsPanel, "card6");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -457,10 +578,10 @@ public class Console extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(cardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -480,17 +601,20 @@ public class Console extends javax.swing.JFrame {
 
     private void itemsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemsTableMousePressed
         // TODO add your handling code here:
-        setCardPanelPanelsVisibleToFalse();
-        new ItemsPanelMethods().tableMousePressed( evt, itemsTable, suppInvTable, countTable, suppInvPanel, itemsFiterText );
+//        changePanel( suppInvBTN );
+
+        String result = new ItemsPanelMethods().tableMousePressed( evt, itemsTable, suppInvPanel, itemsFiterText.getText() );
+        
+        if ( result == "Barcode Column Has Been Clicked" ) {
+            SuppliersInvPanelMethods.display2( suppInvTable, itemsTable.getValueAt( itemsTable.getSelectedRow(), 7).toString() );
+            ( ( DefaultTableModel ) countTable.getModel() ).setRowCount( 0 );
+            
+            changePanel( suppInvBTN );
+        }
     }//GEN-LAST:event_itemsTableMousePressed
 
     private void itemsFiterTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_itemsFiterTextKeyReleased
         // TODO add your handling code here:
-        if ( itemsFiterText.getText().isEmpty() ) {
-            ( ( DefaultTableModel ) itemsTable.getModel() ).setRowCount( 0 );
-            return;
-        }
-
         new ItemsPanelMethods().fiterTextKeyReleased( itemsFiterText, itemsTable );
         
         MyMethods.onKeyDownTableRequestFocus( evt, itemsTable );
@@ -518,43 +642,39 @@ public class Console extends javax.swing.JFrame {
             JOptionPane.showMessageDialog( this, "لم يتم تحديد فاتورة...", "خطاء", 2 );
             return;
         }
-        
+
         new SuppSuppliesPanelMethods().tableMousePressed( evt, countTable, suppInvTable );
     }//GEN-LAST:event_countTableMousePressed
 
     private void suppInfoBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppInfoBTNActionPerformed
         // TODO add your handling code here:
-        setCardPanelPanelsVisibleToFalse();
-        suppInfoPanel.setVisible( true );
-        
+        changePanel( evt.getSource() );
+
         suppInfoFiterText1.requestFocus();
     }//GEN-LAST:event_suppInfoBTNActionPerformed
 
     private void itemsBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsBTNActionPerformed
         // TODO add your handling code here:
-        setCardPanelPanelsVisibleToFalse();
-        itemsPanel.setVisible( true );
-        
+        changePanel( evt.getSource() );
+
         itemsFiterText.requestFocus();
     }//GEN-LAST:event_itemsBTNActionPerformed
 
     private void suppInvFilterTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_suppInvFilterTextKeyReleased
         // TODO add your handling code here:
-        if ( suppInvFilterText.getText().isEmpty() ){
-            ( ( DefaultTableModel ) suppInvTable.getModel() ).setRowCount( 0 );
-            return;
-        }
-        
         new SuppliersInvPanelMethods().fiterTextKeyReleased( suppInvFilterText, suppInvTable );
+
+        if ( countTable.getRowCount() > 0 ) {
+            ( (DefaultTableModel ) countTable.getModel() ).setRowCount( 0 );
+        }
         
         MyMethods.onKeyDownTableRequestFocus( evt, suppInvTable );
     }//GEN-LAST:event_suppInvFilterTextKeyReleased
 
     private void suppInvBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppInvBTNActionPerformed
         // TODO add your handling code here:
-        setCardPanelPanelsVisibleToFalse();
-        suppInvPanel.setVisible( true );
-        
+        changePanel( evt.getSource() );
+
         suppInvFilterText.requestFocus();
     }//GEN-LAST:event_suppInvBTNActionPerformed
 
@@ -566,37 +686,41 @@ public class Console extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         this.dispose();
-        new JavaApplication2().frame.setVisible( true );
+        new Sales().setVisible( true );
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void ordersItemsFilterTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ordersItemsFilterTextKeyReleased
         // TODO add your handling code here:
-        if ( ordersItemsFilterText.getText().isEmpty() ) {
-            ( ( DefaultTableModel ) orderItemsTable.getModel() ).setRowCount(0);
-            return;
-        }
+        ( ( DefaultTableModel ) orderItemsTable.getModel() ).setRowCount(0);
+
+        ItemOrderInvoicesPanelMethods.display( orderItemsInvoicesTable, ordersItemsFilterText.getText() );
         
-        new ItemsOrdersPanelMethods().fiterTextKeyReleased( ordersItemsFilterText.getText(), orderItemsTable );    
-        
-        MyMethods.onKeyDownTableRequestFocus( evt, orderItemsTable );
+        MyMethods.onKeyDownTableRequestFocus( evt, orderItemsInvoicesTable );
     }//GEN-LAST:event_ordersItemsFilterTextKeyReleased
 
     private void orderItemsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_orderItemsTableMousePressed
         // TODO add your handling code here:
-        new ItemsOrdersPanelMethods().tableMousePressed( evt, orderItemsTable, ordersItemsFilterText.getText() );
+        if ( orderItemsInvoicesTable.getSelectedRow() != -1 ) {
+            new ItemsOrdersPanelMethods().tableMousePressed( evt, orderItemsTable, ordersItemsFilterText.getText(), orderItemsInvoicesTable.getValueAt( orderItemsInvoicesTable.getSelectedRow(), 1 ).toString() );
+            
+            ItemsOrdersPanelMethods.display( orderItemsTable, orderItemsInvoicesTable.getValueAt( orderItemsInvoicesTable.getSelectedRow(), 1 ).toString() );    
+        }
     }//GEN-LAST:event_orderItemsTableMousePressed
 
-    private void warehouseBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_warehouseBTNActionPerformed
+    private void itemsOrdersBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemsOrdersBTNActionPerformed
         // TODO add your handling code here:
-        setCardPanelPanelsVisibleToFalse();
-        itemsOrdersPanel.setVisible( true );
-        
+        changePanel( evt.getSource() );
+
         ordersItemsFilterText.requestFocus();
-    }//GEN-LAST:event_warehouseBTNActionPerformed
+    }//GEN-LAST:event_itemsOrdersBTNActionPerformed
 
     private void jScrollPane5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane5MouseClicked
         // TODO add your handling code here:
-        new ItemsOrdersPanelMethods().rightClickAction( evt, orderItemsTable, ordersItemsFilterText.getText() );
+        if ( orderItemsInvoicesTable.getSelectedRow() != -1 ) {
+            new ItemsOrdersPanelMethods().rightClickAction( evt, orderItemsTable, ordersItemsFilterText.getText(), orderItemsInvoicesTable.getValueAt( orderItemsInvoicesTable.getSelectedRow(), 1 ).toString() );
+            
+            ItemsOrdersPanelMethods.display( orderItemsTable, orderItemsInvoicesTable.getValueAt( orderItemsInvoicesTable.getSelectedRow(), 1 ).toString() );
+        }
     }//GEN-LAST:event_jScrollPane5MouseClicked
 
     private void jScrollPane3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane3MouseClicked
@@ -621,15 +745,85 @@ public class Console extends javax.swing.JFrame {
 
     private void jScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane1MouseClicked
         // TODO add your handling code here:
-        new ItemsPanelMethods().rightClickEvent( evt, itemsTable, itemsFiterText );
+        new ItemsPanelMethods().rightClickEvent( evt, itemsTable, itemsFiterText.getText() );
     }//GEN-LAST:event_jScrollPane1MouseClicked
+
+    private void reportsBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsBTNActionPerformed
+        // TODO add your handling code here:
+        changePanel( evt.getSource() );
+    }//GEN-LAST:event_reportsBTNActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        MySQLAdapter.a( "items", "الاصناف");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void orderItemsInvoicesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_orderItemsInvoicesTableMousePressed
+        // TODO add your handling code here:
+        ItemOrderInvoicesPanelMethods.tableMouseClicked( evt, orderItemsInvoicesTable, ordersItemsFilterText.getText());
+        
+        ( ( DefaultTableModel ) orderItemsTable.getModel() ).setRowCount( 0 );
+        
+        if ( orderItemsInvoicesTable.getSelectedRow() != -1 )
+            new ItemsOrdersPanelMethods().display( orderItemsTable, orderItemsInvoicesTable.getValueAt( orderItemsInvoicesTable.getSelectedRow(), 1 ).toString() );
+    }//GEN-LAST:event_orderItemsInvoicesTableMousePressed
+
+    private void jScrollPane6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jScrollPane6MouseClicked
+        // TODO add your handling code here:
+        ItemOrderInvoicesPanelMethods.rightClickEvent( evt, orderItemsInvoicesTable, ordersItemsFilterText.getText() );
+        
+        ( ( DefaultTableModel ) orderItemsTable.getModel() ).setRowCount( 0 );
+    }//GEN-LAST:event_jScrollPane6MouseClicked
     
-    private void setCardPanelPanelsVisibleToFalse() {
+    private void changePanel( Object btnObject ) {
 //        ArrayList<JPanel> caraPanelsList = new ArrayList();
-        itemsPanel.setVisible( false );
-        suppInfoPanel.setVisible( false );
-        suppInvPanel.setVisible( false );
-        itemsOrdersPanel.setVisible( false );
+        ArrayList<JPanel> a = new ArrayList<>();
+        a.add( itemsPanel );
+        a.add( suppInfoPanel );
+        a.add( suppInvPanel );
+        a.add( itemsOrdersPanel );
+        a.add( reportsPanel );
+        
+        ArrayList<JButton> b = new ArrayList<>();
+        b.add( itemsBTN );
+        b.add( suppInfoBTN );
+        b.add( suppInvBTN );
+        b.add( itemsOrdersBTN );
+        b.add( reportsBTN );
+        
+        for ( JPanel s : a ) {
+            s.setVisible( false );
+//            s.setBackground();
+        }
+        
+        for ( JButton button : b ) {
+            if ( ( ( JButton ) btnObject ).getText() == button.getText() ) {
+                ( ( JButton ) btnObject ).setBackground( Color.BLUE );
+                ( ( JButton ) btnObject ).setForeground( Color.WHITE );
+            }
+            else {
+                button.setBackground( Color.getColor( "[78,80,82]" ) );
+                button.setForeground( Color.BLACK );
+            }
+            
+            switch( ( ( JButton ) btnObject ).getText() ) {
+                case "الاصناف":
+                    itemsPanel.setVisible( true );
+                    break;
+                case "الموردين":
+                    suppInfoPanel.setVisible( true );
+                    break;
+                case "فواتير الموردين":
+                    suppInvPanel.setVisible( true );
+                    break;
+                case "طلب من المخزن":
+                    itemsOrdersPanel.setVisible( true );
+                    break;
+                case "التقارير":
+                    reportsPanel.setVisible( true );
+                    break;
+            }
+        }
     }
 
     public static void main(String args[]) {
@@ -670,10 +864,12 @@ public class Console extends javax.swing.JFrame {
     private javax.swing.JLabel imgLabel;
     private javax.swing.JButton itemsBTN;
     private javax.swing.JTextField itemsFiterText;
+    private javax.swing.JButton itemsOrdersBTN;
     private javax.swing.JPanel itemsOrdersPanel;
     private javax.swing.JPanel itemsPanel;
     private javax.swing.JTable itemsTable;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
@@ -681,8 +877,12 @@ public class Console extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTable orderItemsInvoicesTable;
     private javax.swing.JTable orderItemsTable;
     private javax.swing.JTextField ordersItemsFilterText;
+    private javax.swing.JButton reportsBTN;
+    private javax.swing.JPanel reportsPanel;
     private javax.swing.JButton suppInfoBTN;
     private javax.swing.JTextField suppInfoFiterText1;
     private javax.swing.JPanel suppInfoPanel;
@@ -691,6 +891,5 @@ public class Console extends javax.swing.JFrame {
     private javax.swing.JTextField suppInvFilterText;
     private javax.swing.JPanel suppInvPanel;
     private javax.swing.JTable suppInvTable;
-    private javax.swing.JButton warehouseBTN;
     // End of variables declaration//GEN-END:variables
 }

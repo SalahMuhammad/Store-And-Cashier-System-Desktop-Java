@@ -1,26 +1,33 @@
 package classes;
 
+import java.math.BigDecimal;
+
 public class ItemsO {
     
     protected String itemId;
     protected String desc;
-    private float purchasePrice;
-    private float price;
-    private float ws_price;
-    private float ws_ws_price;
+    private BigDecimal purchasePrice;
+    private BigDecimal price;
+    private BigDecimal ws_price;
+    private BigDecimal ws_ws_price;
     public int warehouseStock;
     public int centerStock;
 
     public ItemsO() {}
     
-    public ItemsO(String item_id, String description, float price, float ws_price) {
+    public ItemsO(String item_id, String description, BigDecimal price, BigDecimal ws_price) {
         this.itemId = item_id;
         this.desc = description;
         this.price = price;
         this.ws_price = ws_price;
     }
 
-    public ItemsO(String item_id, String description, float price, float ws_price, int warehouseStock, int centerStock ) {
+    public ItemsO( BigDecimal price, BigDecimal wsPrice ) {
+        this.price      = price;
+        this.ws_price   = wsPrice; 
+    }
+    
+    public ItemsO(String item_id, String description, BigDecimal price, BigDecimal ws_price, int warehouseStock, int centerStock ) {
         this.itemId = item_id;
         this.desc = description;
         this.price = price;
@@ -34,7 +41,7 @@ public class ItemsO {
         this.desc = description;
     }
 
-    public ItemsO(String item_id, String description, float purchasePrice, float price, float ws_price, float ws_ws_price, int warehouseStock, int centerStock ) {
+    public ItemsO(String item_id, String description, BigDecimal purchasePrice, BigDecimal price, BigDecimal ws_price, BigDecimal ws_ws_price, int warehouseStock, int centerStock ) {
         this.itemId = item_id;
         this.desc = description;
         this.purchasePrice = purchasePrice;
@@ -45,7 +52,7 @@ public class ItemsO {
         this.centerStock = centerStock;
     }
 
-    public ItemsO(String item_id, String description, float purchasePrice, float price, float ws_price, float ws_ws_price) {
+    public ItemsO(String item_id, String description, BigDecimal purchasePrice, BigDecimal price, BigDecimal ws_price, BigDecimal ws_ws_price) {
         this.itemId = item_id;
         this.desc = description;
         this.purchasePrice = purchasePrice;
@@ -62,19 +69,19 @@ public class ItemsO {
         return desc;
     }
 
-    public float getPurchasePrice() {
+    public BigDecimal getPurchasePrice() {
         return purchasePrice;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public float getWs_price() {
+    public BigDecimal getWs_price() {
         return ws_price;
     }
 
-    public float getWs_ws_price() {
+    public BigDecimal getWs_ws_price() {
         return ws_ws_price;
     }
 }

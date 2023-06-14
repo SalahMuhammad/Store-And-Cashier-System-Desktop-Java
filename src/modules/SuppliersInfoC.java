@@ -7,20 +7,29 @@ import javax.swing.JOptionPane;
 public class SuppliersInfoC extends MySQLAdapter {
  
     private String table = "supp_info";
-//    private String join = " join supp_supplies on items.itemId = supp_supplies.itemId";
+    private String joinsi = " si LEFT JOIN supp_invoices siv ON si.id = siv.supp_id ";
+    private String joinss = "LEFT JOIN supp_supplies ss ON ss.supp_invoice = siv.id ";
+//    private String joine = "LEFT JOIN expenses e ON e.supplier_id = si.id";
     
-    public ArrayList<classes.SuppliersInfoO> getAll( String where ) {
+    public ArrayList<classes.SuppliersInfoO> getAll( String nameLike ) {
         ArrayList<classes.SuppliersInfoO> list = new ArrayList<>();
         classes.SuppliersInfoO info = null;
         
         try {
-            this.rs = this.select( table , where, "*", null, "name asc", null, null ).executeQuery();
+            ps = select( table + joinsi + joinss, "name LIKE ?", "si.*, "
+                + "COALESCE( SUM( ss.count * ss.price ), 0 ) - "
+                + "COALESCE( ( SELECT SUM( e.pay ) FROM expenses e WHERE e.supplier_id = si.id ), 0 ) AS debt", 
+                "si.name", "name asc", null, null );
+            ps.setString( 1, "%" + nameLike + "%" );
+            
+            rs = ps.executeQuery();
 
             while ( this.rs.next() ) {
                 info = new classes.SuppliersInfoO( 
                     this.rs.getInt( "id" ), 
                     this.rs.getString( "name" ), 
-                    this.rs.getString( "phone" ) 
+                    this.rs.getString( "phone" ),
+                    rs.getBigDecimal( "debt" )
                 );
                 
                 list.add( info );
@@ -38,7 +47,7 @@ public class SuppliersInfoC extends MySQLAdapter {
         try {
             this.connect();
             this.ps = this.con.prepareStatement( "SELECT id FROM " + table + " WHERE name = ?" );
-            
+
             this.ps.setString( 1, name );
                     
             this.rs = this.ps.executeQuery();
@@ -51,6 +60,9 @@ public class SuppliersInfoC extends MySQLAdapter {
         } finally {
             this.closeConnection();
         }
+
+        if ( ! name.isEmpty() )
+            JOptionPane.showMessageDialog( null, "هذا المورد غير موجود", "خطاء", 2 );
         
         return -1;
     }

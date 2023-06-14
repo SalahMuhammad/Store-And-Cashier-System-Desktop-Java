@@ -1,5 +1,6 @@
 package crud.dialogs;
 
+import javaapplication2.SalesItemsTableD;
 import javaapplication2.MyMethods;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -35,6 +36,7 @@ public class SalesD extends javax.swing.JDialog {
         jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("تحديث صنف");
         setResizable(false);
 
         descText.addActionListener(new java.awt.event.ActionListener() {
@@ -144,7 +146,7 @@ public class SalesD extends javax.swing.JDialog {
 
     private void descTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_descTextActionPerformed
         // TODO add your handling code here:
-        SalesItemsD it = new SalesItemsD( null, true );
+        SalesItemsTableD it = new SalesItemsTableD( null, true );
         it.getDescText().setText( descText.getText() );
         
         it.setVisible( true );
@@ -153,7 +155,7 @@ public class SalesD extends javax.swing.JDialog {
             qtyText.requestFocus();
             
             descText.setText( it.itemsObject.getDescription() );
-            priceText.setText( Float.toString( it.itemsObject.getPrice() ) );
+            priceText.setText( it.itemsObject.getPrice().toString() );
 
             jComboBox1.removeAllItems();
             DefaultComboBoxModel model = ( DefaultComboBoxModel ) jComboBox1.getModel();

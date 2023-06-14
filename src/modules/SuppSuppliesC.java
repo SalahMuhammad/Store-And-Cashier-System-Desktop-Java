@@ -2,7 +2,6 @@ package modules;
 
 import classes.SuppSuppliesO;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -16,13 +15,14 @@ public class SuppSuppliesC extends MySQLAdapter {
         
         classes.SuppSuppliesO suppSupplies = null;
         try {
-            this.rs = this.select( table + join, where, "id, supp_supplies.itemId, description, count", null, "description asc", null, null ).executeQuery();
+            this.rs = this.select( table + join, where, "id, supp_supplies.price, description, count", null, "description asc", null, null ).executeQuery();
             
             while ( this.rs.next() ) {
                 suppSupplies = new classes.SuppSuppliesO(
                     rs.getInt( "id" ),
                     rs.getString( "description" ),
-                    rs.getInt( "count" )
+                    rs.getInt( "count" ),
+                    rs.getBigDecimal( "price" )
                 );
                 
                 list.add( suppSupplies );
@@ -38,18 +38,18 @@ public class SuppSuppliesC extends MySQLAdapter {
     
     public SuppSuppliesO getSingleItem( int id ) {
         try {
-            ps = select( table + join, "id = ?", "supp_supplies.itemId, count, description, supp_invoice", null, null, "1", null );
+            ps = select( table + join, "id = ?", "supp_supplies.itemId, count, description, supp_invoice, supp_supplies.price", null, null, "1", null );
             
             ps.setInt( 1, id );
 
             rs = ps.executeQuery();
             
             if ( rs.next() ) {
-                return new SuppSuppliesO( 
+                return new SuppSuppliesO(
                     rs.getString( "supp_supplies.itemId" ), 
                     rs.getString( "description" ), 
                     rs.getInt( "count" ), 
-                    rs.getInt( "supp_invoice" )
+                    rs.getBigDecimal( "supp_supplies.price" )
                 );
             }
             
@@ -60,59 +60,40 @@ public class SuppSuppliesC extends MySQLAdapter {
         return null;
     }
     
-    public int insert( String itemid, int count, int suppInvId ) {
-        String query = "INSERT INTO " + table + " ( itemId, count, supp_invoice ) VALUES ( ?, ?, ? )";
+    public int insert( String ...values ) {
+        String query = "INSERT INTO " + table + " VALUES ( ?, ?, ?, ?, null )";
         
-        try {
-            this.connect();
-            this.ps = this.con.prepareStatement( query );
+        int result = 0;
+        result = insert( query, "Duplicate Entry Error.", values );
         
-            this.ps.setString( 1, itemid );
-            this.ps.setInt( 2, count );
-            this.ps.setInt( 3, suppInvId );
-
-            this.ps.execute();
-
-            JOptionPane.showMessageDialog( null, "تم اضافة العدد بنجاح..." );
-            
-            return 1;
-        } catch (SQLIntegrityConstraintViolationException ex) {
-            JOptionPane.showMessageDialog( null, "هذا الصنف غير موجود...", "خطاء", 2 );
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog( null, ex );
-        }  finally {
-            closeConnection();
+        if ( result == 1 ) {
+            JOptionPane.showMessageDialog( null, "تم ادراج المعاملة بنجاح..." );
+            return result;
         }
-
-        return -1;
+        
+        return result;
     }
     
-    public int update( int id ,String itemId, int count) {
-        String query = "UPDATE " + table + " SET itemId=?, count=? where id=?";
+    public int update( String ...values ) {
+        String query = "UPDATE " + table + " ss SET itemId=?, count=?, price=? where id=? "
+                + "AND COALESCE( ( SELECT SUM(count) FROM supp_supplies s WHERE s.itemId = ss.itemId ), 0 ) - "
+                + "COALESCE( ( SELECT SUM(qty) FROM items_orders io WHERE io.itemId = ss.itemId ), 0 )  >= count - " + values[1];
         
-        try {
-            this.connect();
-            
-            this.ps = this.con.prepareStatement( query );
-            
-            this.ps.setString( 1, itemId );
-            this.ps.setInt( 2, count );
-            this.ps.setInt( 3, id );
-            
-            this.ps.execute();
-            
-            JOptionPane.showMessageDialog( null, "تم تحديث العدد بنجاح..." );
-            
-            return 1;
-        } catch (SQLIntegrityConstraintViolationException ex) {
-            JOptionPane.showMessageDialog( null, "هذا الصنف غير موجود...", "خطاء", 2 );
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog( null, ex );
-        } finally {
-            this.closeConnection();
+        int result = update( query, "Duplicate Entry Error.", values );
+        
+        switch ( result ) {
+            case 1:
+                JOptionPane.showMessageDialog( null, "تم تحديث المعاملة بنجاح..." );
+                break;
+            case 0:
+                JOptionPane.showMessageDialog( null, "لا يوجد ما يكفي من القطع", "خطاء", 2 );
+                break;
+            default:
+                JOptionPane.showMessageDialog( null, "An Error Occurred... update()", "error", 0 );
+                break;
         }
         
-        return -1;
+        return result;
     }
     
     public void delete( int id ) {

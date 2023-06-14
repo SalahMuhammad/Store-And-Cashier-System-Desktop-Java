@@ -15,10 +15,9 @@ public class ItemsOrdersC extends MySQLAdapter {
         
         ItemsOrdersO itemsOrders = null;
         try {
-             ps = this.select( table + join, "date > NOW() - INTERVAL ? DAY OR i.description like ?", "io.id, i.description, io.qty, io.date", null, "io.date desc", null, null );
-             
-             ps.setString( 1, lastNumDays );
-             ps.setString( 2, "%" + lastNumDays + "%" );
+            ps = this.select( table + join, "io.invoice_id = ?", "io.id, i.description, io.qty", null, "i.description asc", null, null );
+//            ps.setString( 1, "%" + lastNumDays + "%" );
+            ps.setString( 1, lastNumDays );
              
             this.rs = ps.executeQuery();
             
@@ -26,8 +25,7 @@ public class ItemsOrdersC extends MySQLAdapter {
                 itemsOrders = new classes.ItemsOrdersO(
                     rs.getInt( "io.id" ),
                     this.rs.getString( "i.description" ),
-                    this.rs.getInt( "io.qty" ),
-                    this.rs.getTimestamp( "io.date" )
+                    this.rs.getInt( "io.qty" )
                 );
 
                 list.add( itemsOrders );
@@ -43,54 +41,62 @@ public class ItemsOrdersC extends MySQLAdapter {
         return null;
     }
     
-    public int insert( String itemId, int qty ) {
-        String query = "INSERT INTO " + table + " ( itemId, qty ) VALUES ( ?, ? )";
+    public void insert( String ...values ) {
+        int result = insert( 
+            "INSERT INTO " + table + " ( itemId, qty, invoice_id ) VALUES ( ?, ?, ? )", 
+            "duplicate entry error", 
+            values 
+        );
         
-        try {
-            connect();
-            ps = con.prepareStatement( query );
-            ps.setString( 1, itemId );
-            ps.setInt( 2, qty );
-            
-            ps.execute();
- 
+        if ( result == 1 ) {
             JOptionPane.showMessageDialog( null, "تم ادراج المعاملة بنجاح..." );
-            
-            return 1;
-        } catch ( SQLIntegrityConstraintViolationException ex ) {
-            JOptionPane.showMessageDialog( null, "هذا الصنف غير موجود", "خطاء", 2 );
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog( null, ex, "خطاء", 2 );
-        } finally {
-            closeConnection();
         }
-
-        return -1;
     }
     
     public int update( int id, String itemId, int qty ) {
-        String query = "UPDATE " + table + " SET itemId=?, qty=? where id=?"
-                + " AND ? <= coalesce( ( SELECT SUM( count ) FROM supp_supplies WHERE itemId = ? ), 0 ) "
-                + "- coalesce( ( SELECT SUM( qty ) FROM items_orders WHERE itemId = ? ), 0 ) + qty"
-                + " AND ? coalesce( ( SELECT SUM( qty ) FROM items_orders WHERE itemId = ? ), 0 ) "
-                + "- coalesce( ( SELECT SUM(qty) FROM sales WHERE itemId = ? ), 0 ) + qty";
+        String query = "UPDATE " + table + " io SET itemId=?, qty=" + qty + " where id=" + id
+            + " AND "
+                + "CASE ? "
+                    + "WHEN io.itemId THEN "
+                        + "CASE " + qty + " >= qty "
+                            + "WHEN 1 THEN "
+                                + "ABS( " + qty + " - qty ) "
+                                + "<= "
+                                + "COALESCE( ( SELECT SUM( count ) FROM supp_supplies WHERE itemId = io.itemId ), 0 ) - "
+                                + "COALESCE( ( SELECT SUM( qty ) FROM items_orders WHERE itemId = io.itemId ), 0 ) " // warehouse stock
+                            + "WHEN 0 THEN "
+                                + "ABS( " + qty + " - qty ) "
+                                + "<= "
+                                + "COALESCE( ( SELECT SUM( qty ) FROM items_orders WHERE itemId = io.itemId ), 0 ) - "
+                                + "COALESCE( ( SELECT SUM( qty ) FROM sales WHERE itemId = io.itemId ), 0 ) " // center stock
+                        + "END "
+                    + "ELSE "
+                        + "( qty <= " // if quantity greater than center stock return true
+                            + "COALESCE( ( SELECT SUM( qty ) FROM items_orders ioo WHERE ioo.itemId = io.itemId ), 0 ) - "
+                            + "COALESCE( ( SELECT SUM( qty ) FROM sales s WHERE s.itemId = io.itemId ), 0 )"
+                        + " AND "
+                            + qty + " <= " // quantity greater than warehouse stock
+                            + "COALESCE( ( SELECT SUM( count ) FROM supp_supplies ss WHERE ss.itemId = ? ), 0 ) - "
+                            + "COALESCE( ( SELECT SUM( qty ) FROM items_orders iooo WHERE iooo.itemId = ? ), 0 ) "
+                        + " ) "
+                + "END";   
         
         try {
             this.connect();
             
             this.ps = this.con.prepareStatement( query );
             
-            this.ps.setString( 1, itemId );
-            this.ps.setInt( 2, qty );
-            this.ps.setInt( 3, id );
-            ps.setInt( 4, qty );
-            ps.setString( 5, itemId );
+            ps.setString( 1, itemId );
+            ps.setString( 2, itemId );
+            ps.setString( 3, itemId );
+            ps.setString( 4, itemId );
             
-            this.ps.execute();
+            int result = this.ps.executeUpdate();
             
-            JOptionPane.showMessageDialog( null, "تم تحديث المعاملة بنجاح..." );
-            
-            return 1;
+            if ( result == 1 )
+                JOptionPane.showMessageDialog( null, "تم تحديث المعاملة بنجاح..." );
+
+            return result;
         } catch ( SQLIntegrityConstraintViolationException ex ) {
             JOptionPane.showMessageDialog( null, "هذا الصنف غير موجود", "خطاء", 2 );
         } catch (SQLException ex) {
@@ -102,18 +108,25 @@ public class ItemsOrdersC extends MySQLAdapter {
         return -1;
     }
     
-    public void delete( int id ) {
+    public int delete( int id ) {
         try {
-            this.delete( table, "id=?");
+            this.delete( table , "id=? AND qty <= "
+                    + "COALESCE( ( SELECT SUM(qty) FROM items_orders ioo WHERE ioo.itemId = items_orders.itemId ), 0 ) - "
+                    + "COALESCE( ( SELECT SUM(qty) FROM sales s WHERE s.itemId = items_orders.itemId), 0 )");
             this.ps.setInt(1, id );
             
-            this.ps.execute();
+            int result = ps.executeUpdate();
             
-            JOptionPane.showMessageDialog( null, "تم حذف المعاملة ينجاح... " );
+            if ( result == 1 )
+                JOptionPane.showMessageDialog( null, "تم حذف المعاملة ينجاح... " );
+            
+            return result;
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog( null, ex, "خطاء", 2 );
         } finally {
             this.closeConnection();
         }
+        
+        return -1;
     }
 }

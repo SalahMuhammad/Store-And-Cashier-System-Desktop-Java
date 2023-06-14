@@ -1,6 +1,7 @@
 package modules;
 
 import classes.SalesInvoicesO;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -16,15 +17,23 @@ public class SalesInvoicesC extends MySQLAdapter {
         try {
             connect();
             
-            ps = con.prepareStatement( "SELECT si.id, si.date FROM " + table + " si LEFT JOIN sales s ON s.invoice_id = si.id LEFT JOIN items i ON i.itemId = s.itemId WHERE si.date > NOW() - INTERVAL ? HOUR OR i.description like ? ORDER BY si.date DESC" );
+            ps = con.prepareStatement( "SELECT si.*, c.name, ( SELECT SUM( qty * unit_price ) FROM sales WHERE invoice_id = si.id ) AS total, payed FROM " + table + " si "
+                    + "LEFT JOIN sales s ON s.invoice_id = si.id "
+//                    + "LEFT JOIN items i ON i.itemId = s.itemId "
+                    + "LEFT JOIN customers c ON c.id = si.customer_id "
+                    + "WHERE si.date > NOW() - INTERVAL ? HOUR OR c.name like ? GROUP BY si.id ORDER BY si.date DESC" );
             ps.setString( 1, lastNumDays );
             ps.setString( 2, "%" + lastNumDays + "%" );
             rs = ps.executeQuery();
             
             while ( rs.next() ) {
-                list.add( new SalesInvoicesO( 
+                list.add( new SalesInvoicesO(
                         rs.getInt( "id" ), 
-                        rs.getTimestamp("date" ) 
+                        rs.getTimestamp("date" ),
+                        rs.getString( "name" ),
+                        rs.getBigDecimal( "payed" ).compareTo( new BigDecimal("1.00") ) == 0 ? rs.getBigDecimal( "total" ) : rs.getBigDecimal( "payed" ),
+                        rs.getBigDecimal( "total" ),
+                        rs.getString( "note" )
                     ) 
                 );
             }
@@ -39,11 +48,14 @@ public class SalesInvoicesC extends MySQLAdapter {
         return null;
     }
     
-    public int insert() {
+    public int insert2( String customerId, String payed, String note ) {
         try {
             connect();
             
-            ps = con.prepareStatement( "INSERT INTO sales_invoices () VALUES ()", Statement.RETURN_GENERATED_KEYS );
+            ps = con.prepareStatement( "INSERT INTO sales_invoices ( customer_id, payed, note ) VALUES ( ?, ?, ? )", Statement.RETURN_GENERATED_KEYS );
+            ps.setString( 1, customerId );
+            ps.setString( 2, payed );
+            ps.setString( 3, note );
             ps.execute();
             
             rs = ps.getGeneratedKeys();
@@ -56,7 +68,7 @@ public class SalesInvoicesC extends MySQLAdapter {
             closeConnection();
         }
 
-        return Integer.parseInt( null );
+        return -1;
     }
     
      public void delete( int id ) {

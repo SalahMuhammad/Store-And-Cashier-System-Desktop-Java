@@ -1,9 +1,9 @@
 package crud.dialogs;
 
+import java.math.BigDecimal;
 import javaapplication2.MyMethods;
 import javax.swing.JOptionPane;
 import modules.ItemsC;
-import modules.SuppSuppliesC;
 
 public class ItemsD extends javax.swing.JDialog {
 
@@ -250,30 +250,35 @@ public class ItemsD extends javax.swing.JDialog {
             JOptionPane.showMessageDialog( this, "يرجي ادخال قيم صالحة فى حقل قطاعي...", "خطاء", 2 );
             return;
         }
-
+        
         if ( submitBTN.getText() == "اضافة" ) {
             result = new ItemsC().insert( 
                     itemIdText.getText(), 
                     descText.getText(), 
-                    Float.parseFloat( purchasPriceText.getText()), 
-                    Float.parseFloat( wswsPriceText.getText()), 
-                    Float.parseFloat( wsPriceText.getText()), 
-                    Float.parseFloat( priceText.getText()) 
+                    purchasPriceText.getText(), 
+                    wswsPriceText.getText(), 
+                    wsPriceText.getText(), 
+                    priceText.getText() 
             );
         } else if ( submitBTN.getText() == "تحديث" ){
-            result = new ItemsC().update(oldItemId, 
-                    itemIdText.getText(), descText.getText(), 
-                    Float.parseFloat( purchasPriceText.getText()), 
-                    Float.parseFloat( priceText.getText()), 
-                    Float.parseFloat( wsPriceText.getText()), 
-                    Float.parseFloat( wswsPriceText.getText()) );
-
-            this.dispose();
+            result = new ItemsC().update(
+                itemIdText.getText(), 
+                descText.getText(), 
+                purchasPriceText.getText(), 
+                priceText.getText(), 
+                wsPriceText.getText(), 
+                wswsPriceText.getText(),
+                oldItemId 
+            );
+            
+            if ( result == 1 )
+                this.dispose();
         }
 
-        if ( result == -1 ) return;
-
-        emptyFields();
+        if ( result == 1 && submitBTN.getText().equals( "اضافة" ) ) 
+            emptyFields();
+        else if ( result == 1 && submitBTN.getText().equals( "تحديث" ) )
+            this.dispose();
     }//GEN-LAST:event_submitBTNActionPerformed
 
     void setPriceInWswsWsP( float purchasePrice) {
@@ -283,7 +288,7 @@ public class ItemsD extends javax.swing.JDialog {
             priceText.setText( purchasePrice + purchasePrice * .9 + "" );
         } else if ( purchasePrice < 20 ) {
             wswsPriceText.setText( purchasePrice + purchasePrice * .3 + "" );
-            wsPriceText.setText( purchasePrice + purchasePrice * .5 + "" );
+            wsPriceText.setText( purchasePrice + purchasePrice * .4 + "" );
             priceText.setText( purchasePrice + purchasePrice * .7 + "" );
         } else if ( purchasePrice < 60 ) {
             wswsPriceText.setText( purchasePrice + purchasePrice * .25 + "" );

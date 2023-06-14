@@ -1,5 +1,6 @@
 package Methods;
 
+import classes.ItemsO;
 import crud.dialogs.ItemsD;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -15,21 +16,12 @@ public class ItemsPanelMethods extends JPanel {
     }
     
     public void fiterTextKeyReleased( JTextField ft, JTable t ) {
-        String filter = ft.getText();
-                
-        display( t, "itemId like '%" + filter + "%' or description like '%" + filter + "%'" );
+        display( t, ft.getText() );
     }
     
-    public void tableMousePressed( MouseEvent evt, JTable t, JTable suppInvTable, JTable suppSuppliesTable, JPanel suppInvPanel, JTextField filterField ) {    
-        if ( t.getSelectedColumn() == 0 && evt.getClickCount() == 2 ) {
-            // Set Row Count 0 In SuppSupplies Table
-            DefaultTableModel dtm = ( DefaultTableModel ) suppSuppliesTable.getModel();
-            dtm.setRowCount( 0 );
-            suppSuppliesTable.setModel( dtm );
-            
-            new SuppliersInvPanelMethods().display( suppInvTable, "itemId = '" + t.getValueAt( t.getSelectedRow(), 0) + "'" );
-            suppInvPanel.setVisible( true );
-            return;
+    public String tableMousePressed( MouseEvent evt, JTable t, JPanel suppInvPanel, String filter ) {    
+        if ( t.getSelectedColumn() == 7 && evt.getClickCount() == 2 ) {
+            return "Barcode Column Has Been Clicked";
         }
         
         // popup dialog to insert new items
@@ -37,71 +29,75 @@ public class ItemsPanelMethods extends JPanel {
             int s = t.getSelectedRow();
             
             new ItemsD( null, true ).dialogInitializer( 
-                t.getValueAt( s, 0 ).toString(), 
-                t.getValueAt( s, 1 ).toString(), 
-                t.getValueAt( s, 2 ).toString(), 
-                t.getValueAt( s, 3 ).toString(), 
+                t.getValueAt( s, 7 ).toString(), 
+                t.getValueAt( s, 6 ).toString(), 
+                t.getValueAt( s, 5 ).toString(), 
                 t.getValueAt( s, 4 ).toString(), 
-                t.getValueAt( s, 5 ).toString() 
+                t.getValueAt( s, 3 ).toString(), 
+                t.getValueAt( s, 2 ).toString() 
             );
 
-            display( t, "itemId like '%" + filterField.getText() + "%' or description like '%" + filterField.getText() + "%'" );
+            display( t, filter );
         }
 
         // update item that has been clicked twice
         
-        rightClickEvent(evt, t, filterField );
+        rightClickEvent( evt, t, filter );
+        
+        return null;
     }
     
-    public void rightClickEvent( MouseEvent evt, JTable t, JTextField filterField ) {
+    public void rightClickEvent( MouseEvent evt, JTable t, String filter ) {
         if ( evt.getButton() == MouseEvent.BUTTON3 ) {
-            ItemsD itemDialog = new ItemsD( null, true );
-    //        itemDialog.suppinvtxt.setText( suppInvTable.getValueAt(suppInvTable.getSelectedRow(), 0).toString() );
-            itemDialog.setVisible( true );
+            new ItemsD( null, true ).setVisible( true );
 
-            if ( filterField.getText().isEmpty() ) return;
-            
-            display( t, "itemId like '%" + filterField.getText() + "%' or description like '%" + filterField.getText() + "%'" );
+            display( t, filter );
         }
     }
     
 //    public void rightClickAction( MouseEvent evt, JTable t, )
     
-    public void display( JTable t, String where ) {
-        ArrayList< classes.ItemsO > arr =  new ItemsC().getAll( where );
-        
+    public void display( JTable t, String itemIdOrDescriptionLike ) {
         DefaultTableModel model = (DefaultTableModel) t.getModel();
+        
         model.setRowCount(0);
-        Object[] row = new Object[8];
-        for (int i = 0; i < arr.size(); i++) {
-            row[0] = arr.get(i).getItem_id();
-            row[1] = arr.get(i).getDescription();
-            row[2] = arr.get(i).getPurchasePrice();
-            row[3] = arr.get(i).getWs_ws_price();
-            row[4] = arr.get(i).getWs_price();
-            row[5] = arr.get(i).getPrice();
-            row[6] = arr.get(i).warehouseStock;
-            row[7] = arr.get(i).centerStock;
+        if ( ! itemIdOrDescriptionLike.trim().isEmpty() ) {
+            ArrayList< classes.ItemsO > arr =  new ItemsC().getAll( itemIdOrDescriptionLike );
+            Object[] row = new Object[8];
             
-            model.addRow(row);
+            for ( ItemsO obj : arr ) {
+                row[0] = obj.centerStock;
+                row[1] = obj.warehouseStock;
+                row[2] = obj.getPrice();
+                row[3] = obj.getWs_price();
+                row[4] = obj.getWs_ws_price();
+                row[5] = obj.getPurchasePrice();
+                row[6] = obj.getDescription();
+                row[7] = obj.getItem_id();
+
+                model.addRow(row);
+            }
         }
     }
     
-    public void displayForSales( JTable t, String where ) {
-        ArrayList< classes.ItemsO > arr =  new ItemsC().getAll( where );
-        
+    public void displayForSales( JTable t, String itemIdOrDescriptionLike ) {
         DefaultTableModel model = (DefaultTableModel) t.getModel();
+        
         model.setRowCount(0);
-        Object[] row = new Object[6];
-        for (int i = 0; i < arr.size(); i++) {
-            row[0] = arr.get(i).getItem_id();
-            row[1] = arr.get(i).getDescription();
-            row[2] = arr.get(i).getWs_price();
-            row[3] = arr.get(i).getPrice();
-            row[4] = arr.get(i).warehouseStock;
-            row[5] = arr.get(i).centerStock;
+        if ( ! itemIdOrDescriptionLike.trim().isEmpty() ) {
+            ArrayList< classes.ItemsO > arr =  new ItemsC().getAll( itemIdOrDescriptionLike );
+            Object[] row = new Object[6];
+            
+            for ( ItemsO obj : arr ) {
+                row[0] = obj.getItem_id();
+                row[1] = obj.getDescription();
+                row[2] = obj.getWs_price();
+                row[3] = obj.getPrice();
+                row[4] = obj.warehouseStock;
+                row[5] = obj.centerStock;
 
-            model.addRow(row);
+                model.addRow(row);
+            }
         }
     }
 }

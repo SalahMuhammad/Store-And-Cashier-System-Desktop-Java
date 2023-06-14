@@ -1,11 +1,13 @@
 package classes;
 
+import java.math.BigDecimal;
+
 public class SalesO extends ItemsO {
     public int id;
-    public float price;
+    public BigDecimal price;
     public int qty;
 
-    public SalesO( int id, String itemId, String desc, float price, int qty) {
+    public SalesO( int id, String itemId, String desc, BigDecimal price, int qty) {
         this.id = id;
         this.itemId = itemId;
         this.desc = desc;

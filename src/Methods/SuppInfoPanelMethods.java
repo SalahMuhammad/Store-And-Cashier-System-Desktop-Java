@@ -1,8 +1,10 @@
 package Methods;
 
+import classes.SuppliersInfoO;
 import crud.dialogs.SuppInfoD;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javaapplication2.ExpensesTableD;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -11,26 +13,32 @@ import modules.SuppliersInfoC;
 public class SuppInfoPanelMethods {
     
     public void fiterTextKeyReleased( JTextField ft, JTable t ) {
-        display( t, "name like '%" + ft.getText() + "%'" );
+        display( t, ft.getText() );
     }
     
     public void tableMousePressed( MouseEvent evt, JTable t, JTextField ft ) {
-//        if ( evt.getButton() == MouseEvent.BUTTON1 ) {
-//            displaySuppInv( "supp_id=" + suppInfoTable.getValueAt( suppInfoTable.getSelectedRow(), 0 ).toString() );
-//        }
-
         // popup dialog to insert new items
         if ( evt.getClickCount() == 2 ) {
             int s = t.getSelectedRow();
             
+            if ( t.getSelectedColumn() != 3 ) {
+                new ExpensesTableD( null, true ).init( 
+                    t.getValueAt( s, 2 ).toString(), 
+                    t.getValueAt( s, 2 ).toString() 
+                );
+                
+                display( t, ft.getText() );
+                
+                return;
+            }
+            
             new SuppInfoD( null, true ).dialogInitializer( 
-                    Integer.parseInt( t.getValueAt( s, 0 ).toString() ), 
-                    t.getValueAt( s, 1 ).toString(), 
-                    t.getValueAt( s, 2 ).toString()
+                    Integer.parseInt( t.getValueAt( s, 3 ).toString() ), 
+                    t.getValueAt( s, 2 ).toString(), 
+                    t.getValueAt( s, 1 ).toString()
             );
 
-            display( t, "name like '%" + ft.getText() + "%'" );
-//            displaySuppInv( "supp_id=null" );
+            display( t, ft.getText() );
         }
 
         // update item that has been clicked twice
@@ -41,25 +49,30 @@ public class SuppInfoPanelMethods {
         if ( evt.getButton() == MouseEvent.BUTTON3 ) {
             new SuppInfoD( null, true ).setVisible( true );
 
-            if ( ft.getText().isEmpty() ) return;
-            
-            display( t, "name like '%" + ft.getText() + "%'" );
-//            displaySuppInv( "supp_id=null" );
+            display( t, ft.getText() );
         }
     }
     
     public void display( JTable t, String where ) {
-        ArrayList< classes.SuppliersInfoO > arr = new SuppliersInfoC().getAll( where );
+        ArrayList< classes.SuppliersInfoO > arr;
         
         DefaultTableModel model = (DefaultTableModel) t.getModel();
         model.setRowCount(0);
-        Object[] row = new Object[3];
-        for (int i = 0; i < arr.size(); i++) {
-            row[0] = arr.get(i).id;
-            row[1] = arr.get(i).name;
-            row[2] = arr.get(i).phone;
-            
-            model.addRow(row);
+        
+        if ( ! where.trim().isEmpty() ) {
+            arr = new SuppliersInfoC().getAll( where );
+        
+            Object[] row = new Object[4];
+            for ( SuppliersInfoO obj : arr ) {
+                row[0] = obj.debt;
+                row[1] = obj.phone;
+                row[2] = obj.name;
+                row[3] = obj.id;
+
+                model.addRow(row);
+            }
         }
+        
+        
     }
 }
